@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Resume - Start Bootstrap Theme</title>
+        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:500,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+
+
+
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
+        <script>
+
+            google.charts.load('current',{'packages':['corechart','geochart']});
+            google.charts.setOnLoadCallback(drawAllSheets);
+
+            function drawAllSheets(){
+
+                drawSheetName('military_spending_per_capita','SELECT A,B,C,D,E,F,G,H,I',militarySpendingPerCapitaResponseHandler);
+                drawSheetName('total_spending_compared','SELECT A,B,C,D',totalSpendingCompared);
+                drawSheetName('average_total_spending','SELECT A,B,C,D,E',averageTotalSpendingCompared);
+                drawSheetName('average_percapita_spending','SELECT A,B,C,D,E',averagePerCapitaSpendingCompared);
+                drawSheetName('total_military_spending','SELECT A,B,C,D,E,F,G,H,I',totalMilitarySpending);
+                drawSheetName('total_healthcare_spending','SELECT A,B,C,D,E,F,G,H,I',totalHealthcareSpending);
+                drawSheetName('total_education_spending','SELECT A,B,C,D,E,F,G,H,I',totalEducationSpending);
+                drawSheetName('total_gdp','SELECT A,B,C,D,E,F,G,H,I',totalGDP);
+                drawSheetName('military_spending_per_capita','SELECT A,B,C,D,E,F,G,H,I',militaryPerCapita);
+                drawSheetName('education_spending_per_capita','SELECT A,B,C,D,E,F,G,H,I',educationPerCapita);
+                drawSheetName('healthcare_spending_per_capita','SELECT A,B,C,D,E,F,G,H,I',healthcarePerCapita);
+                drawSheetName('gdp_per_capita','SELECT A,B,C,D,E,F,G,H,I',gdpPerCapita);
+                drawSheetName('time_total_military_spending','SELECT A,B,C,D,E,F,G,H,I,J,K,L,M',timeTotalMilitarySpending);
+                drawSheetName('healthcare_total_rate','SELECT A,B,C,D,E,F,G,H,I,J,K,L,M',healthcareRateOverTime);
+                drawSheetName('education_rate','SELECT A,B,C,D,E,F,G,H,I,J,K,L,M',educationRateOverTime);
+                drawSheetName('military_rate','SELECT A,B,C,D,E,F,G,H,I,J,K,L,M',militaryRateOverTime);
+                drawSheetName('total_rate_percent','SELECT A,B,C,D',percentChange);
+
+            }//drawAllSheets
+
+            function drawSheetName(sheetName,query,responseHandler){
+
+                var queryString = encodeURIComponent(query);
+                var query = new google.visualization.Query(
+                    'https://docs.google.com/spreadsheets/d/1OZmCn7ulW5-Xy2qchEi9WtvRFIAtbpUWj_R_Ik6j6g4/gviz/tq?sheet='
+                    + sheetName + '&headers=1&tq=' + queryString);
+                query.send(responseHandler);
+            }//drawSheetName 
+
+            function checkError(response){
+
+                if (response.isError()){
+                    alert('Error in query!' + ' ' + response.getMessage() + ' ' + response.getDetailedMessage());
+                    return;
+                }
+
+            }//checkError
+
+            function militarySpendingPerCapitaResponseHandler(response){
+                checkError(response);
+    
+                var data = response.getDataTable();
+                data.sort({column: 1,desc:true});
+
+                var formatter = new google.visualization.NumberFormat({
+                    fractionDigits: 2, prefix: '$'});
+                
+                formatter.format(data,1);
+
+                var options = {
+                    vAxis: {title: '$USD'},
+                    hAxis: {title: 'Country'},
+                    bar: {groupWidth: '80%'}, 
+                    title: 'Military Spending Per Capita 2015-2019'
+                };
+    
+                var chart = new google.visualization.ColumnChart(document.getElementById('military_per_capita_div'));
+                chart.draw(data, options);
+    
+            }//militarySpendingPerCapitaResponseHandler
+
+            function totalSpendingCompared(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 2, desc: true});
+
+                var options = {
+                    legend: {position: 'bottom', maxLines: 3},//maxLines adds arrows to legend
+                    bar: {groupWidth: '75%'},
+                    isStacked: true,
+                    title: 'Total Spending (2011-2018)'
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById('total_spending_compared'));
+                chart.draw(data,options);
+
+        }//totalSpendingCompared
+        function averageTotalSpendingCompared(response){
+                checkError(response);
+    
+                var data = response.getDataTable();
+                data.sort({column: 1,desc:true});
+
+                var formatter = new google.visualization.NumberFormat({
+                    fractionDigits: 2, prefix: '$'});
+                
+                formatter.format(data,1);
+
+                var options = {
+                    vAxis: {title: '$USD'},
+                    bars: 'horizontal',
+                    hAxis: {title: 'Country'},
+                    bar: {groupWidth: '80%'}
+                    //title: 'Average Spending from 2011-2018'
+                };
+    
+                var chart = new google.visualization.ColumnChart(document.getElementById('average_total_spending_div'));
+                chart.draw(data, options);
+    
+            }//averageTotalSpendingCompared
+
+            function averagePerCapitaSpendingCompared(response){
+                checkError(response);
+    
+                var data = response.getDataTable();
+                data.sort({column: 1,desc:true});
+
+                var formatter = new google.visualization.NumberFormat({
+                    fractionDigits: 2, prefix: '$'});
+                
+                formatter.format(data,1);
+
+                var options = {
+                    vAxis: {title: '$USD'},
+                    bars: 'horizontal',
+                    hAxis: {title: 'Country'},
+                    bar: {groupWidth: '80%'}
+                    //title: 'Average Spending from 2011-2018'
+                };
+    
+                var chart = new google.visualization.ColumnChart(document.getElementById('average_percapita_spending_div'));
+                chart.draw(data, options);
+    
+            }//averagePerCapitaSpendingCompared
+
+            
+            function totalMilitarySpending(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 1, desc: true});
+
+                var options = {                 
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+                
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('total_military_spending_div'));
+                chart.draw(data,options);
+            }//totalMilitarySpending
+
+            function totalHealthcareSpending(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+                
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('total_healthcare_spending_div'));
+                chart.draw(data,options);
+            }//totalHealthcareSpending
+
+            function totalEducationSpending(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+                
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('total_education_spending_div'));
+                chart.draw(data,options);
+            }//totalEducationSpending
+
+            function totalGDP(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 1, desc: true});
+
+                var options = {                    
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('total_gdp_div'));
+                chart.draw(data,options);
+            }//totalGDP
+            function militaryPerCapita(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('military_percapita_div'));
+                chart.draw(data,options);
+            }//militaryPerCapita
+
+            function educationPerCapita(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('education_percapita_div'));
+                chart.draw(data,options);
+            }//educationPerCapita
+
+            function healthcarePerCapita(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('healthcare_percapita_div'));
+                chart.draw(data,options);
+            }//educationPerCapita
+
+            function gdpPerCapita(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('gdp_percapita_div'));
+                chart.draw(data,options);
+            }//gdpPerCapita
+
+            function timeTotalMilitarySpending(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('time_total_military_spending_div'));
+                chart.draw(data,options);
+            }//gdpPerCapita
+            function rateMilitarySpending(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('time_total_military_spending_div'));
+                chart.draw(data,options);
+            }//rateMilitarySpending
+
+            function healthcareRateOverTime(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                //data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('healthcare_rate_over_time_div'));
+                chart.draw(data,options);
+            }//gdpPerCapita
+
+            function educationRateOverTime(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                //data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('education_rate_over_time_div'));
+                chart.draw(data,options);
+            }//educationRateOverTime
+
+            function militaryRateOverTime(response){
+                checkError(response);
+
+                var data = response.getDataTable();
+                //data.sort({column: 1, desc: true});
+
+                var options = {
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Spending'},
+                    bars: 'horizontal'
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('military_rate_over_time_div'));
+                chart.draw(data,options);
+            }//militaryRateOverTime
+            
+            function percentChange(response){
+                checkError(response);
+    
+                var data = response.getDataTable();
+    
+                var options = {
+                    legend: 'none',
+                    bars: 'horizontal',
+                    annotations: {alwaysOutside: true},
+                    isStacked: true,
+                    title: 'Percent Change from 2011 to 2018',
+                    vAxis: {title: 'Country'},
+                    hAxis: {title: 'Percent (%)'}
+                };
+    
+                var view = new google.visualization.DataView(data);
+                view.setColumns([0,1,{
+                    calc: function(dt,row){
+                        return Math.ceil(dt.getFormattedValue(row,1))+'%';
+                    },
+                    sourceColumn: 1,
+                    type: 'string',
+                    role: 'annotation'
+                }]);
+    
+                var chart = new google.visualization.BarChart(document.getElementById('percent_change_div'));
+    
+                chart.draw(data,options);
+            }
+        </script>
+        
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
+            <a class="navbar-brand js-scroll-trigger" href="#page-top">
+                <span class="d-block d-lg-none">Clarence Taylor</span>
+                <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="assets/img/profile.jpg" alt="" /></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#about">Time-Series Total</a></li>
+                    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#experience">Time-Series Per Capita</a></li>
+                    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#education">Average Total</a></li>
+                    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#skills">Average Per Capita</a></li>
+                    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#interests">Rates</a></li>
+                    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#awards">Awards</a></li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Page Content-->
+        <div class="container-fluid p-0">
+            <!-- About-->
+            <section class="resume-section" id="about">
+                <div class="resume-section-content">
+                    <h2 class="mb-5">Time-Series Totals Comparison</h2>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Total Military Spending</h3>
+                            <h4 class = "subheading mb-3">2011-2018</h2>
+
+                            <div id = 'total_military_spending_div' style='width: 1200px; height:500px;'></div>
+
+                            <!--</div id = 'time_total_military_spending_div' style='width: 900px; height:500px;'></div>-->
+                        </div>    
+                    </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Total Education Spending</h3>
+                            <h4 class = "subheading mb-3">2011-2018</h2>
+
+                            <div id = 'total_education_spending_div' style='width: 1200px; height:500px;'></div>
+
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Total Healthcare Spending</h3>
+                            <h4 class = "subheading mb-3">2011-2018</h2>
+
+                                <div id = 'total_healthcare_spending_div' style='width: 1200px; height:500px;'></div>
+
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Total GDP</h3>
+                            <h4 class = "subheading mb-3">2011-2018</h2>
+
+                            <div id = 'total_gdp_div' style='width: 1200px; height:500px;'></div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <hr class="m-0" />
+            <!-- Experience-->
+            <section class="resume-section" id="experience">
+                <div class="resume-section-content">
+                    <h2 class="mb-5">Time-Series Per Capita Comparison</h2>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Military Spending Per Capita</h3>
+                            <h4 class = "subheading mb-3">2011-2018</h2>
+                            <div id = 'military_percapita_div' style='width: 1200px; height:500px;'></div>    
+                            
+
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Education Spending Per Capita</h3>
+                            <h4 class = "subheading mb-3">2011-2018</h2>
+                            <div id = 'education_percapita_div' style='width: 1200px; height:500px;'></div> 
+                            
+
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Healthcare Spending Per Capita</h3>
+                            <div class="subheading mb-3">2011-2018</div>
+                            <div id = 'healthcare_percapita_div' style='width: 1200px; height:500px;'></div> 
+                        </div>
+           
+                    </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-between">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">GDP Per Capita</h3>
+                            <div class="subheading mb-3">2011-2018</div>
+                            <div id = 'gdp_percapita_div' style='width: 1200px; height:500px;'></div> 
+                        </div>
+                        <!--<div class="flex-shrink-0"><span class="text-primary">September 2008 - June 2010</span></div>-->
+                    </div>
+                </div>
+            </section>
+            <hr class="m-0" />
+            <!-- Education-->
+            <section class="resume-section" id="education">
+                <div class="resume-section-content">
+                    <h2 class="mb-5">Averages Total</h2>
+                    <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Average Spending</h3>
+                            <div class="subheading mb-3">2011-2018</div>
+                            <div id = 'average_total_spending_div' style='width: 900px; height:500px;'></div>
+                        </div>
+                        
+                    </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-between">
+                        <div class="flex-grow-1">
+                            
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <hr class="m-0" />
+            <!-- Skills-->
+            <section class="resume-section" id="skills">
+                <div class="resume-section-content">
+                    <h2 class="mb-5">Average Per Capita</h2>
+                    <div id = 'average_percapita_spending_div' style='width: 900px; height:500px;'></div>
+                </div>
+            </section>
+            <hr class="m-0" />
+            <!-- Interests-->
+            <section class="resume-section" id="interests">
+                <div class="resume-section-content">
+                    <div class="d-flex flex-column flex-md-row justify-content-between">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Healthcare Spending Rate</h3>
+                            <div class="subheading mb-3">from 2011-2018</div>
+                            <div id = 'healthcare_rate_over_time_div' style='width: 1200px; height:500px;'></div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column flex-md-row justify-content-between">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Education Spending Rate</h3>
+                            <div class="subheading mb-3">from 2011-2018</div>
+                            <div id = 'education_rate_over_time_div' style='width: 1200px; height:500px;'></div> 
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex flex-column flex-md-row justify-content-between">
+                        <div class="flex-grow-1">
+                            <h3 class="mb-0">Military Spending Rate</h3>
+                            <div class="subheading mb-3">from 2011-2018</div>
+                            <div id = 'military_rate_over_time_div' style='width: 1200px; height:500px;'></div>
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </section>
+            <hr class="m-0" />
+            <!-- Awards-->
+            <section class="resume-section" id="awards">
+                <div class="resume-section-content">
+                    <h2 class="mb-5">Awards & Certifications</h2>
+                    <div id = 'percent_change_div' style='width: 900px; height:500px;'></div>
+                </div>
+            </section>
+        </div>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Third party plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
